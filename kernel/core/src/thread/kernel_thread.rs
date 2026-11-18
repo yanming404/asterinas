@@ -5,7 +5,9 @@ use ostd::{
     task::{Task, TaskOptions},
 };
 
-use super::{AsThread, Thread, oops};
+#[cfg(not(feature = "kernelet"))]
+use super::oops;
+use super::{AsThread, Thread};
 use crate::{
     prelude::*,
     sched::{Nice, SchedPolicy},
@@ -99,7 +101,11 @@ impl ThreadOptions {
     pub(crate) fn build(mut self) -> Arc<Task> {
         let task_fn = self.func.take().unwrap();
         let thread_fn = move || {
+            #[cfg(not(feature = "kernelet"))]
             let _ = oops::catch_panics_as_oops(task_fn);
+            // Preserve the Kernelet whole-instance panic policy.
+            #[cfg(feature = "kernelet")]
+            task_fn();
             // Ensure that the thread exits.
             current_thread!().exit();
         };

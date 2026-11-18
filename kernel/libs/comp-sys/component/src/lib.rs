@@ -17,7 +17,10 @@ use alloc::{
 };
 
 pub use component_macro::*;
+#[cfg(not(feature = "kernelet"))]
 pub use inventory::submit;
+#[cfg(feature = "kernelet")]
+pub use kernelet_registry::submit;
 // This crate intentionally uses the `log` crate directly (not `ostd::log`)
 // because it is a standalone framework crate that does not depend on OSTD.
 // Messages are forwarded to the OSTD logger via the `LogCrateBridge`.

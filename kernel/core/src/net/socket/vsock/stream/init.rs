@@ -5,9 +5,9 @@ use crate::{
     net::socket::{
         util::{SockShutdownCmd, check_port_privilege},
         vsock::{
-            addr::{VMADDR_CID_HOST, VMADDR_PORT_ANY, VsockSocketAddr},
+            addr::{VMADDR_PORT_ANY, VsockSocketAddr},
+            socket_transport::BoundPort,
             stream::{ConnectingStream, ListenStream},
-            transport::BoundPort,
         },
     },
     prelude::*,
@@ -73,12 +73,6 @@ impl InitStream {
         remote_addr: VsockSocketAddr,
         pollee: &Pollee,
     ) -> Result<ConnectingStream, (Error, Self)> {
-        if remote_addr.cid != VMADDR_CID_HOST {
-            return Err((
-                Error::with_message(Errno::ENETUNREACH, "only the host vsock CID is supported"),
-                self,
-            ));
-        }
         if remote_addr.port == VMADDR_PORT_ANY {
             return Err((
                 Error::with_message(Errno::EINVAL, "the vsock port is invalid to connect"),
@@ -95,6 +89,12 @@ impl InitStream {
             }
         };
 
+        if !bound_port.permits_peer(remote_addr.cid) {
+            return Err((
+                Error::with_message(Errno::ENETUNREACH, "the peer CID is not authorized"),
+                Self::new_bound(bound_port),
+            ));
+        }
         ConnectingStream::new(bound_port, remote_addr, pollee)
             .map_err(|(error, bound_port)| (error, Self::new_bound(bound_port)))
     }

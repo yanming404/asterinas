@@ -9,6 +9,10 @@ edition = "2024"
 inventory.workspace = true
 log.workspace = true
 component-macro = { path = "../component-macro" }
+kernelet-registry = { path = "../../../../../kernelet/prototype/libs/guest-registry", optional = true }
+
+[features]
+kernelet = ["dep:kernelet-registry"]
 
 [build-dependencies]
 json = "0.12.4"

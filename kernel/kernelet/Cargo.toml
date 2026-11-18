@@ -1,0 +1,17 @@
+[package]
+name = "asterinas-kernelet"
+version = "0.1.0"
+edition = "2021"
+license = "MPL-2.0"
+publish = false
+build = "build.rs"
+
+[lib]
+name = "asterinas_kernelet"
+crate-type = ["staticlib"]
+
+[dependencies]
+asterinas = { path = "..", default-features = false, features = ["kernelet"] }
+
+[lints]
+workspace = true

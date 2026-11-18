@@ -89,7 +89,7 @@ dependencies = [
  "ostd",
  "ostd-pod",
  "smoltcp",
- "spin",
+ "spin 0.9.9",
  "takeable",
  "zerocopy",
 ]
@@ -108,7 +108,7 @@ dependencies = [
  "io-util",
  "ostd",
  "ostd-pod",
- "spin",
+ "spin 0.9.9",
  "zerocopy",
 ]
 
@@ -118,8 +118,9 @@ version = "0.1.0"
 dependencies = [
  "component",
  "inventory",
+ "kernelet-registry",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -128,7 +129,7 @@ version = "0.1.0"
 dependencies = [
  "component",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -170,6 +171,7 @@ dependencies = [
  "inventory",
  "io-util",
  "jhash",
+ "kernelet-registry",
  "keyable-arc",
  "lending-iterator",
  "logo-ascii-art",
@@ -187,7 +189,7 @@ dependencies = [
  "short-vis-path",
  "smallvec",
  "sparse-id-alloc",
- "spin",
+ "spin 0.9.9",
  "takeable",
  "tdx-guest",
  "time",
@@ -208,7 +210,7 @@ dependencies = [
  "component",
  "device-id",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -226,7 +228,7 @@ dependencies = [
  "ostd",
  "ostd-pod",
  "sparse-id-alloc",
- "spin",
+ "spin 0.9.9",
  "zerocopy",
 ]
 
@@ -240,7 +242,7 @@ dependencies = [
  "font8x8",
  "int-to-c-enum",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -264,7 +266,7 @@ dependencies = [
  "bitflags 2.13.0",
  "component",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -276,7 +278,7 @@ dependencies = [
  "component",
  "ostd",
  "ostd-pod",
- "spin",
+ "spin 0.9.9",
  "zerocopy",
 ]
 
@@ -319,7 +321,7 @@ dependencies = [
  "aster-softirq",
  "component",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -334,7 +336,7 @@ dependencies = [
  "io-util",
  "ostd",
  "ostd-pod",
- "spin",
+ "spin 0.9.9",
  "zerocopy",
 ]
 
@@ -349,7 +351,7 @@ dependencies = [
  "fdt-util",
  "int-to-c-enum",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -389,7 +391,7 @@ dependencies = [
  "component",
  "intrusive-collections",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -402,7 +404,7 @@ dependencies = [
  "id-alloc",
  "inherit-methods-macro",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -415,7 +417,7 @@ dependencies = [
  "component",
  "fdt-util",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -429,7 +431,7 @@ dependencies = [
  "fdt-util",
  "inherit-methods-macro",
  "ostd",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -474,7 +476,7 @@ dependencies = [
  "ostd-pod",
  "short-vis-path",
  "smallvec",
- "spin",
+ "spin 0.9.9",
  "tdx-guest",
  "typeflags-util",
  "zerocopy",
@@ -490,6 +492,13 @@ dependencies = [
  "aster-simpledrm",
  "aster-uart",
  "ostd",
+]
+
+[[package]]
+name = "asterinas-kernelet"
+version = "0.1.0"
+dependencies = [
+ "asterinas",
 ]
 
 [[package]]
@@ -608,6 +617,7 @@ dependencies = [
  "component-macro",
  "inventory",
  "json",
+ "kernelet-registry",
  "log",
 ]
 
@@ -777,7 +787,7 @@ name = "device-id"
 version = "0.1.0"
 dependencies = [
  "aster-util",
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -992,7 +1002,7 @@ dependencies = [
  "hash32 0.2.1",
  "rustc_version",
  "serde",
- "spin",
+ "spin 0.9.9",
  "stable_deref_trait",
 ]
 
@@ -1110,6 +1120,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "078e285eafdfb6c4b434e0d31e8cfcb5115b651496faca5749b88fafd4f23bfd"
 
 [[package]]
+name = "kernelet-registry"
+version = "0.1.0"
+dependencies = [
+ "inventory",
+]
+
+[[package]]
 name = "keyable-arc"
 version = "0.1.0"
 
@@ -1134,7 +1151,7 @@ version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 dependencies = [
- "spin",
+ "spin 0.9.9",
 ]
 
 [[package]]
@@ -1419,19 +1436,31 @@ dependencies = [
  "minicov",
  "multiboot2",
  "num-traits",
- "ostd-macros",
+ "ostd-macros 0.19.0",
  "ostd-pod",
  "ostd-test",
  "riscv",
  "sbi-rt",
  "smallvec",
- "spin",
+ "spin 0.9.9",
  "tdx-guest",
+ "typedio",
  "unwinding",
  "volatile 0.6.1",
+ "vostd",
  "x86",
  "x86_64",
  "zerocopy",
+]
+
+[[package]]
+name = "ostd-macros"
+version = "0.18.1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "rand",
+ "syn 2.0.118",
 ]
 
 [[package]]
@@ -1817,6 +1846,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "spin"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "023a211cb3138dbc438680b32560ad89f699977624c9f8dbb95a47d5b4c07dd3"
+dependencies = [
+ "lock_api",
+]
+
+[[package]]
 name = "stable_deref_trait"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1953,6 +1991,22 @@ dependencies = [
  "serde_spanned",
  "toml_datetime",
  "winnow",
+]
+
+[[package]]
+name = "typedio"
+version = "0.1.0"
+dependencies = [
+ "typedio-macros",
+]
+
+[[package]]
+name = "typedio-macros"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.118",
 ]
 
 [[package]]
@@ -2098,6 +2152,19 @@ name = "volatile"
 version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af8ca9a5d4debca0633e697c88269395493cebf2e10db21ca2dbde37c1356452"
+
+[[package]]
+name = "vostd"
+version = "0.1.0"
+dependencies = [
+ "bitvec",
+ "log",
+ "ostd-macros 0.18.1",
+ "ostd-pod",
+ "smallvec",
+ "spin 0.10.1",
+ "typedio",
+]
 
 [[package]]
 name = "walkdir"

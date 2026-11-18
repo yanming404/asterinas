@@ -19,6 +19,9 @@ use crate::{
 
 pub(crate) mod exception;
 pub(crate) mod kernel_thread;
+// Kernelet keeps its existing panic=abort, whole-instance stop policy. The
+// hardware OSTD unwinder is not installed on a switched Linux carrier stack.
+#[cfg(not(feature = "kernelet"))]
 pub(crate) mod oops;
 mod softirqd;
 mod stats;

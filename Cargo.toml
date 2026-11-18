@@ -27,6 +27,7 @@ members = [
     "ostd/libs/ostd-test",
     "ostd/libs/padding-struct",
     "kernel",
+    "kernel/kernelet",
     "kernel/comps/drm",
     "kernel/comps/i8042",
     "kernel/comps/simpledrm",
@@ -151,7 +152,7 @@ license = "MPL-2.0"
 edition = "2024"
 
 [workspace.dependencies]
-ostd = { path = "ostd", version = "0.19.0" }
+ostd = { path = "ostd", version = "0.19.0", default-features = false }
 
 # Crates under ostd/libs
 align_ext = { path = "ostd/libs/align_ext", version = "0.1.0" }
@@ -304,6 +305,12 @@ syn = { version = "2.0.77", features = ["full", "parsing", "fold", "visit-mut"] 
 
 [profile.dev]
 panic = "unwind"
+
+[profile.kernelet]
+inherits = "release"
+panic = "abort"
+opt-level = "s"
+codegen-units = 1
 
 [profile.release]
 lto = "thin"

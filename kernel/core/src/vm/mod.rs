@@ -9,19 +9,24 @@
 //!    frames that can be mapped into one virtual address range. Frames in a
 //!    VMO can be non-contiguous in physical memory.
 
+#[cfg(not(feature = "kernelet"))]
 use osdk_frame_allocator::FrameAllocator;
+#[cfg(not(feature = "kernelet"))]
 use osdk_heap_allocator::{HeapAllocator, type_from_layout};
 
 pub mod page_cache;
 pub(crate) mod perms;
 pub mod vmar;
 
+#[cfg(not(feature = "kernelet"))]
 #[ostd::global_frame_allocator]
 static FRAME_ALLOCATOR: FrameAllocator = FrameAllocator;
 
+#[cfg(not(feature = "kernelet"))]
 #[ostd::global_heap_allocator]
 static HEAP_ALLOCATOR: HeapAllocator = HeapAllocator;
 
+#[cfg(not(feature = "kernelet"))]
 #[ostd::global_heap_allocator_slot_map]
 const fn slot_type_from_layout(layout: core::alloc::Layout) -> Option<ostd::mm::heap::SlotInfo> {
     type_from_layout(layout)

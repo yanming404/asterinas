@@ -114,7 +114,10 @@ impl RegisteredHandler for PoweroffHandler {
 inventory::collect!(PoweroffHandler);
 
 #[doc(hidden)]
+#[cfg(not(feature = "kernelet"))]
 pub use inventory::submit;
+#[cfg(feature = "kernelet")]
+pub use kernelet_registry::submit;
 
 /// Registers a restart handler.
 ///

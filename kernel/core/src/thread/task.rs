@@ -9,7 +9,9 @@ use ostd::{
     user::{ReturnReason, UserContextApi, UserMode, UserModeHooks},
 };
 
-use super::{Thread, oops};
+use super::Thread;
+#[cfg(not(feature = "kernelet"))]
+use super::oops;
 use crate::{
     context::current_userspace,
     cpu::LinuxAbi,
@@ -127,7 +129,12 @@ pub(crate) fn create_new_user_task(
     TaskOptions::new(move || {
         // TODO: If a kernel "oops" is caught, we should kill the entire
         // process rather than just ending the thread.
+        #[cfg(not(feature = "kernelet"))]
         let _ = oops::catch_panics_as_oops(user_task_func);
+        // The virtual platform panic handler stops this instance. There is no
+        // pretend catch/unwind across Host services or coroutine stack switches.
+        #[cfg(feature = "kernelet")]
+        user_task_func();
     })
     .data(thread_ref)
     .local_data(thread_local)

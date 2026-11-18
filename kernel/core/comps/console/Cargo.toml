@@ -12,3 +12,6 @@ spin.workspace = true
 
 [lints]
 workspace = true
+
+[features]
+kernelet = ["ostd/kernelet"]

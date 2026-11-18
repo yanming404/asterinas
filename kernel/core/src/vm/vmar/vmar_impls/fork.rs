@@ -107,6 +107,7 @@ fn cow_copy_pt(src: &mut CursorMut<'_>, dst: &mut CursorMut<'_>, size: usize) ->
 
                 num_copied += 1;
             }
+            #[cfg(not(feature = "kernelet"))]
             VmQueriedItem::MappedIoMem { paddr, prop } => {
                 // For MMIO pages, find the corresponding `IoMem` and map it
                 let (iomem, offset) = src.find_iomem_by_paddr(paddr).unwrap();

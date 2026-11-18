@@ -3,7 +3,9 @@
 use alloc::borrow::ToOwned;
 
 use aster_block::{BLOCK_SIZE, BlockDevice, SECTOR_SIZE, bio::BioStatus};
+#[cfg(not(feature = "kernelet"))]
 use aster_nvme::NvmeBlockDevice;
+#[cfg(not(feature = "kernelet"))]
 use aster_virtio::device::block::device::BlockDevice as VirtIoBlockDevice;
 use device_id::DeviceId;
 use ostd::mm::VmIo;
@@ -25,6 +27,7 @@ use crate::{
 };
 
 pub(super) fn init_in_first_kthread() {
+    #[cfg(not(feature = "kernelet"))]
     for device in aster_block::collect_all() {
         if device.is_partition() {
             continue;

@@ -59,6 +59,13 @@ static COMPONENT: Once<Component> = Once::new();
 fn component_init() -> Result<(), ComponentInitError> {
     let component = Component::init()?;
     COMPONENT.call_once(|| component);
+    #[cfg(feature = "kernelet")]
+    register_device(
+        String::from(KERNELET_CONSOLE_NAME),
+        Arc::new(KerneletConsole {
+            receive: Once::new(),
+        }),
+    );
     Ok(())
 }
 
@@ -72,5 +79,28 @@ impl Component {
         Ok(Self {
             console_device_table: SpinLock::new(BTreeMap::new()),
         })
+    }
+}
+
+#[cfg(feature = "kernelet")]
+pub const KERNELET_CONSOLE_NAME: &str = "Kernelet-Console";
+#[cfg(feature = "kernelet")]
+struct KerneletConsole {
+    receive: Once<&'static ConsoleCallback>,
+}
+#[cfg(feature = "kernelet")]
+impl AnyConsoleDevice for KerneletConsole {
+    fn send(&self, buf: &[u8]) {
+        ostd::console::write_bytes(buf);
+    }
+    fn register_callback(&self, callback: &'static ConsoleCallback) {
+        self.receive.call_once(|| callback);
+    }
+}
+
+#[cfg(feature = "kernelet")]
+impl core::fmt::Debug for KerneletConsole {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        f.write_str("KerneletHostConsole")
     }
 }

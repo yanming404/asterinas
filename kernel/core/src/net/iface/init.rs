@@ -14,6 +14,7 @@ use crate::{net::iface::sched::PollScheduler, prelude::*};
 
 static IFACES: Once<Vec<Arc<Iface>>> = Once::new();
 
+#[cfg(not(feature = "kernelet"))]
 fn virtio_iface() -> Option<&'static Arc<Iface>> {
     IFACES.get().unwrap().get(1)
 }
@@ -23,6 +24,7 @@ pub(in crate::net) fn iter_all_ifaces() -> Iter<'static, Arc<Iface>> {
 }
 
 // TODO: Support multiple network devices and avoid the hardcoded device name.
+#[cfg(not(feature = "kernelet"))]
 const VIRTIO_DEVICE_NAME: &str = aster_virtio::device::network::DEVICE_NAME;
 
 pub(in crate::net) fn init() {
@@ -33,6 +35,7 @@ pub(in crate::net) fn init() {
         // to ensure the loopback interface index is ahead of virtio.
         ifaces.push(new_loopback());
 
+        #[cfg(not(feature = "kernelet"))]
         if let Some(iface_virtio) = new_virtio() {
             ifaces.push(iface_virtio);
         }
@@ -40,6 +43,7 @@ pub(in crate::net) fn init() {
         ifaces
     });
 
+    #[cfg(not(feature = "kernelet"))]
     if let Some(iface_virtio) = virtio_iface() {
         let callback = || iface_virtio.poll();
         aster_network::register_recv_callback(VIRTIO_DEVICE_NAME, callback);
@@ -96,6 +100,7 @@ fn new_loopback() -> Arc<Iface> {
     ) as Arc<Iface>
 }
 
+#[cfg(not(feature = "kernelet"))]
 fn new_virtio() -> Option<Arc<Iface>> {
     use aster_bigtcp::{
         iface::EtherIface,

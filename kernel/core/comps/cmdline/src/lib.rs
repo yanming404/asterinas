@@ -70,7 +70,10 @@ pub use dispatch::INIT_PROC_ARGS;
 #[doc(hidden)]
 pub use dispatch::KernelParam;
 #[doc(hidden)]
+#[cfg(not(feature = "kernelet"))]
 pub use inventory::submit;
+#[cfg(feature = "kernelet")]
+pub use kernelet_registry::submit;
 #[doc(hidden)]
 pub use unimplemented::setup_unimplemented;
 

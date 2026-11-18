@@ -34,11 +34,11 @@ macro_rules! declare_rtc_drivers {
     }
 }
 
-#[cfg(target_arch = "x86_64")]
+#[cfg(all(target_arch = "x86_64", not(feature = "kernelet")))]
 mod cmos;
 #[cfg(target_arch = "riscv64")]
 mod goldfish;
-#[cfg(target_arch = "x86_64")]
+#[cfg(all(target_arch = "x86_64", not(feature = "kernelet")))]
 mod kvmclock;
 #[cfg(target_arch = "loongarch64")]
 mod loongson;
@@ -48,8 +48,8 @@ mod pl031;
 declare_rtc_drivers! {
     // Prefers the KVM wall clock over CMOS on x86_64. This matches Linux.
     // Reference: <https://elixir.bootlin.com/linux/v7.0/source/arch/x86/kernel/kvmclock.c#L326>.
-    #[cfg(target_arch = "x86_64")] kvmclock::RtcKvmClock,
-    #[cfg(target_arch = "x86_64")] cmos::RtcCmos,
+    #[cfg(all(target_arch = "x86_64",not(feature="kernelet")))] kvmclock::RtcKvmClock,
+    #[cfg(all(target_arch = "x86_64",not(feature="kernelet")))] cmos::RtcCmos,
     #[cfg(target_arch = "riscv64")] goldfish::RtcGoldfish,
     #[cfg(target_arch = "loongarch64")] loongson::RtcLoongson,
     #[cfg(target_arch = "aarch64")] pl031::RtcPl031,

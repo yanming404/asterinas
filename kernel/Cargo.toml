@@ -10,15 +10,17 @@ ostd.workspace = true
 # High-level component crates.
 #
 # Keep this list in sync with the `extern crate` declarations in `src/lib.rs`.
-aster-drm.workspace = true
-aster-simpledrm.workspace = true
-aster-uart.workspace = true
+aster-drm = {workspace=true,optional=true}
+aster-simpledrm = {workspace=true,optional=true}
+aster-uart = {workspace=true,optional=true}
 
 [target.x86_64-unknown-none.dependencies]
-aster-i8042.workspace = true
+aster-i8042 = {workspace=true,optional=true}
 
 [features]
-default = ["cvm_guest"]
+hardware = ["aster-core/hardware", "dep:aster-drm", "dep:aster-simpledrm", "dep:aster-uart", "dep:aster-i8042"]
+kernelet = ["aster-core/kernelet", "ostd/kernelet"]
+default = ["cvm_guest", "hardware"]
 coverage = ["aster-core/coverage"]
 cvm_guest = ["aster-core/cvm_guest"]
 pvh_boot = ["aster-core/pvh_boot"]

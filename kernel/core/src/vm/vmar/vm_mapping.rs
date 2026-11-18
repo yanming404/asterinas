@@ -10,8 +10,9 @@ use core::{
 
 use align_ext::AlignExt;
 use aster_util::printer::VmPrinter;
+#[cfg(not(feature = "kernelet"))]
+use ostd::io::IoMem;
 use ostd::{
-    io::IoMem,
     mm::{
         CachePolicy, Frame, FrameAllocOptions, HasSize, PageFlags, PageProperty, UFrame, VmSpace,
         io::util::HasVmReaderWriter, tlb::TlbFlushOp, vm_space::VmQueriedItem,
@@ -525,6 +526,7 @@ impl VmMapping {
                     }
                     cursor.flusher().sync_tlb_flush();
                 }
+                #[cfg(not(feature = "kernelet"))]
                 Some(VmQueriedItem::MappedIoMem { .. }) => {
                     // The page of I/O memory is populated when the memory
                     // mapping is created.
@@ -1160,6 +1162,7 @@ impl MapHandle<'_, '_, '_> {
     /// Maps an [`IoMem`].
     ///
     /// `offset` specifies the virtual address offset (from the start of the memory region).
+    #[cfg(not(feature = "kernelet"))]
     pub fn map_iomem(&mut self, offset: usize, io_mem: IoMem) {
         let map_size = self.size();
         if offset >= map_size {

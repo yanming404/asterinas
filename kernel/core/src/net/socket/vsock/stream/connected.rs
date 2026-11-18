@@ -4,7 +4,7 @@ use crate::{
     events::IoEvents,
     net::socket::{
         util::{RecvFlags, SendFlags, SockShutdownCmd},
-        vsock::{addr::VsockSocketAddr, transport::Connection},
+        vsock::{addr::VsockSocketAddr, socket_transport::Connection},
     },
     prelude::*,
     process::signal::Pollee,

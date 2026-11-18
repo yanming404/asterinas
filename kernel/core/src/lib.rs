@@ -23,6 +23,13 @@
 #![feature(custom_inner_attributes)]
 
 extern crate alloc;
+#[cfg(all(
+    feature = "kernelet",
+    any(feature = "hardware", feature = "cvm_guest", feature = "pvh_boot")
+))]
+compile_error!(
+    "the Kernelet platform requires --no-default-features and excludes physical/CVM boot features"
+);
 extern crate lru;
 #[macro_use]
 extern crate getset;

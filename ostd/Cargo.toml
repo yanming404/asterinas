@@ -16,6 +16,8 @@ default-target = "x86_64-unknown-none"
 targets = ["x86_64-unknown-none"]
 
 [dependencies]
+virtual-ostd = { package = "vostd", path = "../../kernelet/prototype/vostd", optional = true, features = ["asterinas"] }
+typedio = {path="../../kernelet/prototype/libs/typedio",optional=true}
 align_ext.workspace = true
 bitflags.workspace = true
 bitvec.workspace = true
@@ -70,6 +72,8 @@ fdt.workspace = true
 unwinding = { workspace = true, features = ["fde-static"] }
 
 [features]
+kernelet = ["dep:virtual-ostd", "typedio"]
+typedio = ["dep:typedio"]
 default = ["cvm_guest"]
 # The guest OS support for Confidential VMs (CVMs), e.g., Intel TDX
 cvm_guest = ["dep:tdx-guest"]

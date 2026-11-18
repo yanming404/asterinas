@@ -16,12 +16,15 @@
 //!
 
 mod addr;
+#[cfg_attr(feature = "kernelet", path = "socket_transport_kernelet.rs")]
+mod socket_transport;
 mod stream;
+#[cfg(not(feature = "kernelet"))]
 mod transport;
 
 pub(crate) use addr::VsockSocketAddr;
 pub(crate) use stream::VsockStreamSocket;
 
 pub(in crate::net) fn init() {
-    transport::init();
+    socket_transport::init();
 }

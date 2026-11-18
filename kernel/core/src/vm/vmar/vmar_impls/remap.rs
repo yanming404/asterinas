@@ -263,6 +263,7 @@ impl Vmar {
 
                     cursor.map(frame, prop);
                 }
+                #[cfg(not(feature = "kernelet"))]
                 VmQueriedItem::MappedIoMem { paddr, prop } => {
                     cursor.unmap(PAGE_SIZE);
                     cursor.jump(new_map_va).unwrap();

@@ -159,6 +159,7 @@ impl Vmar {
                 Some(vm_item) if vm_item.prop().flags.contains(required_page_flags) => {
                     match vm_item {
                         VmQueriedItem::MappedRam { frame, .. } => return Ok((*frame).clone()),
+                        #[cfg(not(feature = "kernelet"))]
                         VmQueriedItem::MappedIoMem { .. } => {
                             return_errno_with_message!(
                                 Errno::EOPNOTSUPP,

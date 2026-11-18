@@ -17,11 +17,15 @@
 #![no_std]
 #![warn(missing_docs)]
 
+// Hardware and virtual platforms are mutually exclusive in one OSTD crate.
+#[cfg(not(feature = "kernelet"))]
 extern crate alloc;
 #[macro_use]
+#[cfg(not(feature = "kernelet"))]
 extern crate ostd_pod;
 
 // Set this crate's log prefix for `ostd::log`.
+#[cfg(not(feature = "kernelet"))]
 macro_rules! __log_prefix {
     () => {
         ""
@@ -32,40 +36,67 @@ macro_rules! __log_prefix {
 #[cfg_attr(target_arch = "riscv64", path = "arch/riscv/mod.rs")]
 #[cfg_attr(target_arch = "loongarch64", path = "arch/loongarch/mod.rs")]
 #[cfg_attr(target_arch = "aarch64", path = "arch/arm/mod.rs")]
+#[cfg(not(feature = "kernelet"))]
 pub mod arch;
 
+#[cfg(not(feature = "kernelet"))]
 pub mod boot;
+#[cfg(not(feature = "kernelet"))]
 pub mod bus;
+#[cfg(not(feature = "kernelet"))]
 pub mod console;
+#[cfg(not(feature = "kernelet"))]
 pub mod cpu;
+#[cfg(not(feature = "kernelet"))]
 mod error;
+#[cfg(not(feature = "kernelet"))]
 pub mod io;
+#[cfg(not(feature = "kernelet"))]
 pub mod irq;
+#[cfg(not(feature = "kernelet"))]
 pub mod log;
+#[cfg(not(feature = "kernelet"))]
 pub mod mm;
+#[cfg(not(feature = "kernelet"))]
 pub mod panic;
+#[cfg(not(feature = "kernelet"))]
 pub mod power;
+#[cfg(not(feature = "kernelet"))]
 pub mod prelude;
+#[cfg(not(feature = "kernelet"))]
 pub mod smp;
+#[cfg(not(feature = "kernelet"))]
 pub mod sync;
+#[cfg(not(feature = "kernelet"))]
 pub mod task;
+#[cfg(not(feature = "kernelet"))]
 pub mod timer;
+#[cfg(feature = "typedio")]
+#[cfg(not(feature = "kernelet"))]
+pub mod typedio;
+#[cfg(not(feature = "kernelet"))]
 pub mod user;
+#[cfg(not(feature = "kernelet"))]
 pub mod util;
 
 #[cfg(target_arch = "x86_64")]
+#[cfg(not(feature = "kernelet"))]
 pub mod vm;
 
 #[cfg(feature = "coverage")]
+#[cfg(not(feature = "kernelet"))]
 mod coverage;
 
+#[cfg(not(feature = "kernelet"))]
 use core::sync::atomic::{AtomicBool, Ordering};
 
+#[cfg(not(feature = "kernelet"))]
 pub use ostd_macros::{
     early_cmdline_parser, global_frame_allocator, global_heap_allocator,
     global_heap_allocator_slot_map, main, panic_handler,
 };
 
+#[cfg(not(feature = "kernelet"))]
 pub use self::{error::Error, prelude::Result};
 
 /// Initializes OSTD.
@@ -80,6 +111,7 @@ pub use self::{error::Error, prelude::Result};
 // TODO: We need to refactor this function to make it more modular and
 // make inter-initialization-dependencies more clear and reduce usages of
 // boot stage only global variables.
+#[cfg(not(feature = "kernelet"))]
 unsafe fn init() {
     arch::enable_cpu_features();
 
@@ -147,11 +179,13 @@ unsafe fn init() {
 }
 
 /// Indicates whether the kernel is in bootstrap context.
+#[cfg(not(feature = "kernelet"))]
 pub(crate) static IN_BOOTSTRAP_CONTEXT: AtomicBool = AtomicBool::new(true);
 
 /// Invoke the initialization functions defined in the FFI.
 /// The component system uses this function to call the initialization functions of
 /// the components.
+#[cfg(not(feature = "kernelet"))]
 fn invoke_ffi_init_funcs() {
     unsafe extern "C" {
         fn __sinit_array();
@@ -166,6 +200,7 @@ fn invoke_ffi_init_funcs() {
     }
 }
 
+#[cfg(not(feature = "kernelet"))]
 mod feature_validation {
     #[cfg(all(not(target_arch = "riscv64"), feature = "riscv_sv39_mode"))]
     compile_error!(
@@ -175,6 +210,7 @@ mod feature_validation {
 
 /// Simple unit tests for the ktest framework.
 #[cfg(ktest)]
+#[cfg(not(feature = "kernelet"))]
 mod test {
     use crate::prelude::*;
 
@@ -198,6 +234,7 @@ mod test {
 }
 
 #[doc(hidden)]
+#[cfg(not(feature = "kernelet"))]
 pub mod ktest {
     //! The module re-exports everything from the [`ostd_test`] crate, as well
     //! as the test entry point macro.
@@ -208,3 +245,8 @@ pub mod ktest {
     pub use ostd_macros::{test_main as main, test_panic_handler as panic_handler};
     pub use ostd_test::*;
 }
+
+#[cfg(feature = "kernelet")]
+pub use ostd_macros::early_cmdline_parser;
+#[cfg(feature = "kernelet")]
+pub use virtual_ostd::*;

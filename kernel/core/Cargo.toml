@@ -12,19 +12,19 @@ aster-block.workspace = true
 aster-cmdline.workspace = true
 aster-console.workspace = true
 aster-device.workspace = true
-aster-framebuffer.workspace = true
+aster-framebuffer = {workspace=true,optional=true}
 aster-fuse.workspace = true
 aster-input.workspace = true
 aster-logger.workspace = true
 aster-network.workspace = true
-aster-nvme.workspace = true
+aster-nvme = {workspace=true,optional=true}
 aster-rights.workspace = true
 aster-rights-proc.workspace = true
 aster-softirq.workspace = true
 aster-systree.workspace = true
 aster-time.workspace = true
 aster-util.workspace = true
-aster-virtio.workspace = true
+aster-virtio = {workspace=true,optional=true}
 atomic-integer-wrapper.workspace = true
 bitflags.workspace = true
 bitvec.workspace = true
@@ -37,6 +37,7 @@ hashbrown.workspace = true
 id-alloc.workspace = true
 inherit-methods-macro.workspace = true
 inventory.workspace = true
+kernelet-registry = { path = "../../../kernelet/prototype/libs/guest-registry", optional = true }
 intrusive-collections.workspace = true
 int-to-c-enum.workspace = true
 io-util.workspace = true
@@ -76,7 +77,11 @@ riscv.workspace = true
 loongArch64.workspace = true
 
 [features]
-default = ["cvm_guest"]
+hardware = ["dep:aster-framebuffer", "dep:aster-nvme", "dep:aster-virtio"]
+kernelet = ["ostd/kernelet", "typedio", "osdk-frame-allocator/kernelet", "osdk-heap-allocator/kernelet", "aster-console/kernelet", "aster-time/kernelet", "component/kernelet", "aster-cmdline/kernelet", "dep:kernelet-registry"]
+typedio = ["ostd/typedio"]
+typedio-polling = ["typedio"]
+default = ["cvm_guest", "hardware"]
 coverage = ["ostd/coverage"]
 cvm_guest = ["dep:tdx-guest", "ostd/cvm_guest", "aster-virtio/cvm_guest"]
 pvh_boot = ["ostd/pvh_boot"]

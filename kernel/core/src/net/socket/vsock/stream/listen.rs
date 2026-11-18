@@ -4,8 +4,8 @@ use crate::{
     events::IoEvents,
     net::socket::vsock::{
         addr::VsockSocketAddr,
+        socket_transport::{BoundPort, Listener},
         stream::ConnectedStream,
-        transport::{BoundPort, Listener},
     },
     prelude::*,
     process::signal::Pollee,

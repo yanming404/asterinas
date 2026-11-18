@@ -10,6 +10,10 @@ component.workspace = true
 inventory.workspace = true
 ostd.workspace = true
 spin.workspace = true
+kernelet-registry = { path = "../../../../../kernelet/prototype/libs/guest-registry", optional = true }
+
+[features]
+kernelet = ["dep:kernelet-registry"]
 
 [lints]
 workspace = true

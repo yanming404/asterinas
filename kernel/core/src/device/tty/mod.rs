@@ -29,6 +29,7 @@ pub(super) mod ioctl_defs;
 mod line_discipline;
 mod serial;
 pub(super) mod termio;
+#[cfg(not(feature = "kernelet"))]
 mod vt;
 
 pub(crate) use device::CONSOLE_DEVICE_ID;
@@ -39,6 +40,7 @@ pub(super) fn init_in_first_process() -> Result<()> {
     hvc::init_in_first_process()?;
     serial::init_in_first_process()?;
     device::init_in_first_process()?;
+    #[cfg(not(feature = "kernelet"))]
     vt::init_in_first_process()?;
 
     Ok(())

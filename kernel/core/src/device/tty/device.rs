@@ -9,11 +9,13 @@
 use device_id::{DeviceId, MajorId, MinorId};
 use spin::Once;
 
+#[cfg(not(feature = "kernelet"))]
+use super::vt::active_vt;
 use crate::{
     device::{
         Device, DeviceType,
         registry::char,
-        tty::{hvc::hvc0_device, serial::serial0_device, vt::active_vt},
+        tty::{hvc::hvc0_device, serial::serial0_device},
     },
     fs::{
         devtmpfs::DevtmpfsNodeMeta,
@@ -40,7 +42,10 @@ impl Device for Tty0Device {
     }
 
     fn open(&self) -> Result<Box<dyn PerOpenFileOps>> {
-        active_vt().open()
+        #[cfg(not(feature = "kernelet"))]
+        return active_vt().open();
+        #[cfg(feature = "kernelet")]
+        return_errno_with_message!(Errno::ENODEV, "no hardware virtual terminal on Kernelet");
     }
 }
 
@@ -93,7 +98,11 @@ impl SystemConsole {
             let console_name = CONSOLES
                 .get()
                 .and_then(|consoles| consoles.first().map(|s| s.as_str()))
-                .unwrap_or("tty0");
+                .unwrap_or(if cfg!(feature = "kernelet") {
+                    "hvc0"
+                } else {
+                    "tty0"
+                });
 
             let device = match console_name {
                 "tty0" => Some(Arc::new(Tty0Device) as _),
@@ -106,7 +115,12 @@ impl SystemConsole {
                     "'{}' console not found, falling back to 'tty0'",
                     console_name
                 );
-                Arc::new(Tty0Device) as _
+                #[cfg(not(feature = "kernelet"))]
+                return Arc::new(Tty0Device) as _;
+                #[cfg(feature = "kernelet")]
+                return hvc0_device()
+                    .expect("Kernelet host console was not registered")
+                    .clone() as _;
             });
 
             Arc::new(Self { inner })

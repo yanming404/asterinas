@@ -68,7 +68,7 @@ pub(super) fn init_in_first_process() -> Result<()> {
 
     let virtio_console = devices
         .iter()
-        .find(|(name, _)| name.as_str() == aster_virtio::device::console::DEVICE_NAME)
+        .find(|(name, _)| name.as_str() == CONSOLE_NAME)
         .map(|(_, device)| device.clone());
 
     if let Some(virtio_console) = virtio_console {
@@ -91,3 +91,8 @@ pub(super) fn init_in_first_process() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(not(feature = "kernelet"))]
+const CONSOLE_NAME: &str = aster_virtio::device::console::DEVICE_NAME;
+#[cfg(feature = "kernelet")]
+const CONSOLE_NAME: &str = aster_console::KERNELET_CONSOLE_NAME;

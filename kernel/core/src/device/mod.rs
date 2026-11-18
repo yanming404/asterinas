@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 mod evdev;
+#[cfg(not(feature = "kernelet"))]
 mod fb;
 mod mem;
 pub(crate) mod misc;
@@ -60,6 +61,7 @@ pub(crate) fn init_in_first_kthread() {
     evdev::init_in_first_kthread();
     // TODO: Transfer ownership of the boot framebuffer to DRM and skip registering the
     // legacy framebuffer device once DRM has initialized successfully.
+    #[cfg(not(feature = "kernelet"))]
     fb::init_in_first_kthread();
 }
 
