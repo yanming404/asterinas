@@ -168,7 +168,8 @@ fn io_error(error: PipeError) -> Error {
     Error::with_message(
         match error {
             PipeError::WouldBlock | PipeError::Busy => Errno::EAGAIN,
-            PipeError::Closed | PipeError::Reset => Errno::EPIPE,
+            PipeError::Closed => Errno::EPIPE,
+            PipeError::Reset => Errno::ECONNRESET,
             _ => Errno::EIO,
         },
         "TypedIO pipe operation failed",
@@ -424,6 +425,12 @@ impl Conn {
             s.timer = Some(timer);
         }
     }
+    fn reset(&self) {
+        self.fail(Some(Error::with_message(
+            Errno::ECONNRESET,
+            "TypedIO vsock connection reset",
+        )));
+    }
     fn refresh(&self) {
         let mut s = self.state.lock();
         let mut notify = IoEvents::empty();
@@ -442,7 +449,7 @@ impl Conn {
             }
             if events.contains(ProducerEvents::RESET) {
                 drop(s);
-                self.fail(None);
+                self.reset();
                 return;
             }
         }
@@ -461,7 +468,7 @@ impl Conn {
             }
             if events.contains(ConsumerEvents::RESET) {
                 drop(s);
-                self.fail(None);
+                self.reset();
                 return;
             }
         }
@@ -793,10 +800,7 @@ impl Space {
                 let Some(conn) = conn else { return };
                 match message.kind {
                     VsockControlKind::Reset => {
-                        let connecting = conn.state.lock().phase == Phase::Connecting;
-                        conn.fail(connecting.then(|| {
-                            Error::with_message(Errno::ECONNRESET, "peer rejected vsock connection")
-                        }));
+                        conn.reset();
                     }
                     VsockControlKind::Shutdown(direction) => {
                         let mut s = conn.state.lock();
